@@ -1,0 +1,46 @@
+#include<cstdio>
+#include<iostream>
+using namespace std;
+int n,k,a[1000005],b[1000005];
+int p[1000005],l,r,q[1000005],ll,rr;
+int rd()
+{
+    int x=0,f=1;
+    char c=getchar();
+    while (c!='-'&&(c<'0'||c>'9')) c=getchar();
+    if (c=='-') f=-1,c=getchar();
+    while (c>='0'&&c<='9') x=(x<<3)+(x<<1)+(c&15),c=getchar();
+    return x*f;
+}
+int write(int x)
+{
+    if (x<0) putchar('-'),write(-x);
+    else if (x<=9) putchar(x+'0');
+    else write(x/10),putchar(x%10+'0');
+}
+int main()
+{
+    n=rd(),k=rd();
+    l=ll=1;
+    for (int i=1;i<k;i++)
+    {
+        a[i]=rd();
+        while (r&&a[p[r]]<=a[i]) r--;
+        while (rr&&a[q[rr]]>=a[i]) rr--;
+        p[++r]=q[++rr]=i;
+    }
+    for (int i=k,j=1;i<=n;i++,j++)
+    {
+        a[i]=rd();
+        while (q[l]<j) l++;
+        while (q[ll]<j) ll++;
+        while (r>=l&&a[p[r]]<=a[i]) r--;
+        while (rr>=ll&&a[q[rr]]>=a[i]) rr--;
+        p[++r]=q[++rr]=i;
+        write(a[q[ll]]),putchar(' ');
+        b[i]=p[l];
+    }
+    printf("\n");
+    for (int i=k;i<=n;i++)
+        write(a[b[i]]),putchar(' ');
+}

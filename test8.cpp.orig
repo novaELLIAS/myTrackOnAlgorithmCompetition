@@ -1,0 +1,31 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int N = 1e5+5;
+int n, k;
+ll tree[N][15] = {0};
+int f(int x) {
+    return x&-x;
+}
+void update(int p, ll v, int k) {
+    for(; p <= n+1; p += f(p)) tree[p][k] += v;
+}
+ll getsum(int p, int k) {
+    ll res = 0;
+    for(; p; p -= f(p)) res += tree[p][k];
+    return res;
+}
+int main() {
+    scanf("%d%d", &n, &k);
+    update(1, 1, 0);
+    for(int i = 1; i <= n; ++i) {
+        ll num;
+        scanf("%lld", &num);
+        for(int j = 1; j <= k+1; ++j) {
+            ll sum = getsum(num, j-1); // 在第j-1棵树状数组中求出DP[i][j]
+            update(num+1, sum, j); // 把DP[i][j]扔进第j棵树状数组        
+		}   
+	}   
+	printf("%lld\n", getsum(n+1, k+1));
+}
+

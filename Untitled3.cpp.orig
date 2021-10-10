@@ -1,0 +1,364 @@
+#include <cstdio>
+
+#include <iostream>
+
+#include <cstring>
+
+
+using namespace std;
+
+
+#define int unsigned long long
+
+
+namespace PROIO{
+
+const int L=1<<15,OUTL = 30;
+
+char chout[OUTL],*pout=chout;
+
+char buf[L],*s = buf,*t = buf;
+
+inline char getc() {
+
+if(s==t) t=(s=buf)+fread(buf,1,L,stdin);
+
+        return s==t ? EOF:*s++;
+
+}
+
+    inline void read(int &x) {
+
+   register char c;
+
+   while((c=getc())>'9'||c<'0');
+
+   x = c-'0';
+
+   while((c=getc())<='9'&&c>='0')
+
+     x = (x<<1)+(x<<3)+c-'0';
+
+    }
+
+}using PROIO::read;
+
+
+int n,k;
+
+int v[10],x[10009],y[10009];
+
+namespace baoli {
+
+   int a[10][20];
+
+   bool find(int xx) {
+
+ 	for(int i = 1; i <= n; i++)
+
+  if(xx>=x[i] && xx<=y[i])
+
+   return 1;
+
+return 0;
+
+   }
+
+   bool ok(int j,int a,int b) {
+
+//cout<<j<<" ";    	
+
+int t = j,i = 1,tt = 1;
+
+while(t) {
+
+  if(tt > k) break;
+
+  if(t%10 == a) 
+
+   if(!find(j-a*i+b*i)) {return 0;} 
+
+  t /= 10;i *= 10;tt++;
+
+}
+
+return 1;
+
+   }
+
+
+   bool pd(int a,int b) {
+
+ 	for (int i = 1; i <= ::n; i++) {
+
+ if(y[i] - x[i] > 100000) {
+
+ 	for (int j = 0; j < 10000; j++) {
+
+ 	 if((ok(x[i]+j,a,b) && ok(j+x[i],b,a) && ok(y[i]-j,a,b) && ok(y[i]-j,b,a)) == 0) 
+
+       return 0;
+
+   }
+
+ } else {
+
+       for (int j = 0; j <= y[i]-x[i]; j++) {
+
+    if(j <= 10 || (x[i]+j)%10==0) {
+
+   if((ok(x[i]+j,a,b) && ok(j+x[i],b,a) && ok(y[i]-j,a,b) && ok(y[i]-j,b,a))==0)
+
+          return 0;
+
+ }
+
+  else {
+
+  register int t = x[i]+j; 
+
+if(t%10 == a) {
+
+if(find(t-a+b) == 0) return 0;
+
+} else if(t%10 == b) {
+
+if(find(t-b+a) == 0) return 0;
+
+    }
+
+ }
+
+   }
+
+  }
+
+}
+
+return 1;
+
+   }
+
+
+   void dfs(int k,int now) {
+
+ 	 if(now >= 10) return;
+
+ if(pd(k,now))
+
+   a[k][++a[k][0]] = now,v[now]=1;
+
+ dfs(k,now+1);
+
+   }
+
+
+   void work() {
+
+ for(int i = 1; i < 10; i++) 
+
+if(!v[i]) {
+
+a[i][++a[i][0]] = i;
+
+v[i] = 1;
+
+dfs(i,i+1);
+
+}
+
+ for(int i = 1; i < 10; i++) 
+
+   if(a[i][0]) {
+
+ for(int j = 1; j <= a[i][0]; j++)
+
+  cout << a[i][j];
+
+ cout << endl;
+
+   }
+
+    }
+
+}
+
+/*
+
+namespace nwy {
+
+}
+
+
+namespace kwy {
+
+int m[10][10];
+
+void work() {
+
+for (int i = 1; i <= 9; i++)
+
+for (int j = 1; j <= 9; j++)
+
+  m[i][j] = 1;
+
+for (int i = 1; i <= n; i++) {
+
+ 
+
+ int l = x[i]%10, r = y[i]%10;
+
+ if ((x[i]/10)%10 == (y[i]/10)%10) {
+
+ 	for (int i = 1;i < l; i++)
+
+ 	for (int j = l; j <= r; j++)
+
+ 	 m[i][j] =  m[j][i] = 0;
+
+ 	for (int i = r+1; i <= 9; i++)
+
+for (int j = l; j <= r; j++)
+
+ m[i][j] = m[j][i] = 0; 
+
+
+ } else {
+
+ 	for (int i = 1;i < l; i++)
+
+ 	for (int j = l; j <= 9; j++)
+
+ 	 m[i][j] = m[j][i] = 0;
+
+ 	for (int i = 1; i <= r; i++)
+
+for (int j = r+1; j <= 9; j++)
+
+ m[i][j] = m[j][i] = 0; 
+
+ }
+
+   }
+
+for (int i = 1;i <= 9; i++) 
+
+if(!v[i]) {
+
+ v[i] = 1;
+
+ cout << i; 
+
+ for (int j = i+1; j <= 9; j++)
+
+  if(m[i][j]){
+
+  cout << j;
+
+  v[j] = 1;
+
+  }
+
+ cout << "\n";
+
+}
+
+}
+
+}
+
+
+*/
+
+
+int vv[100][13]; 
+
+
+void push(int x) {
+
+int t = x,ttt = 1;
+
+while(t) {
+
+  if(ttt > k) break;
+
+  vv[ttt][t%10]++;
+
+  t /= 10;ttt++;
+
+}
+
+}
+
+
+bool pd(int a,int b) {
+
+for (int i = 1; i <= k; i++)
+
+if(vv[i][a] != vv[i][b]) return 0;
+
+return 1;
+
+}
+
+
+void work() {
+
+for (int i = 1; i <= n; i++)
+
+for (int j = x[i]; j <= y[i]; j++)
+
+ push (j);
+
+//for(int i=1;i<=k;i++)
+
+//cout<<vv[i][1]<<" "<<vv[i][3]<<"\n";
+
+//return ;
+
+for (int i = 1; i <= 9; i++) 
+
+if (!v[i]) {
+
+cout << i;
+
+for (int j = i+1; j <= 9; j++)
+
+if(pd(i,j)){v[j]=1;cout<<j;}
+
+cout << endl;
+
+} 
+
+}
+
+
+int ca = 0;
+
+
+main() {
+
+freopen("laser.in","r",stdin);
+
+freopen("laser.out","w",stdout);
+
+read(n),read(k);
+
+for (int i = 1; i <= n; i++)
+
+  read(x[i]),read(y[i]),ca += y[i]-x[i];
+
+if(ca < 10000000) {
+
+  work();
+
+       return 0;
+
+}
+
+baoli::work();
+return 0;
+
+}
+
+
